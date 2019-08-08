@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "135725064315",
+    "firebase_url": "https://kopidalar.firebaseio.com",
+    "project_id": "kopidalar",
+    "storage_bucket": "kopidalar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135725064315:android:19a3f96757b56312",
+        "android_client_info": {
+          "package_name": "com.example.kopidalar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135725064315-1lh9bqbbtfeao8ugs1l79i85c8b089uu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKlX-zY_oIMoJMssZ17ACRGq5vnGCIorc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135725064315-1lh9bqbbtfeao8ugs1l79i85c8b089uu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

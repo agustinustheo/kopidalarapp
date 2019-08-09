@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:kopidalar/setup/pages/home.dart';
+import 'package:kopidalar/pages/accounts/signIn.dart';
+import 'package:kopidalar/pages/home.dart';
 
-class LoginPage extends StatefulWidget {
-  LoginPage({Key key, this.title}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  SignUpPage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   String _email, _password;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: Text('Sign Up'),
       ),
       body: Form(
         key: _formKey,
@@ -51,8 +52,8 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
             ),
             RaisedButton(
-              onPressed: signIn,
-              child: Text('Sign In'),
+              onPressed: signUp,
+              child: Text('Sign Up'),
             )
           ],
         ),
@@ -60,17 +61,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> signIn() async{
+  Future<void> signUp() async{
     final formState = _formKey.currentState;
     if(formState.validate()){
       formState.save();
       try{
-        AuthResult authResult  = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        AuthResult authResult  = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _email,
           password: _password
         );
         FirebaseUser user = authResult.user;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+        user.sendEmailVerification();
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       }
       catch(e){
         print(e);

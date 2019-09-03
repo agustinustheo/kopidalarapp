@@ -1,5 +1,5 @@
-import 'package:kopidalar/pages/index.dart';
 import 'package:flutter/material.dart';
+import 'package:kopidalar/pages/splash/splash.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,9 +9,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Kopi Dalar',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.brown,
       ),
-      home: IndexPage(),
+      home: SplashPage(),
     );
   }
 }

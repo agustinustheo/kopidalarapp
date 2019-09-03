@@ -1,5 +1,5 @@
 name: kopidalar
-description: A new Flutter project.
+description: Order coffee from your favourite barista
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -21,6 +21,9 @@ dependencies:
     sdk: flutter
   firebase_core: ^0.4.0+1
   firebase_auth: ^0.14.0+1
+  firebase_storage:
+  cloud_firestore:
+  shared_preferences:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -41,6 +44,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/graphics/kopidalar_white_logo.png
+    - assets/graphics/kopidalar_text_logo.png
+    - assets/graphics/kopidalar_logo.png
+    - assets/graphics/user/anonymous.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

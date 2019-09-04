@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:kopidalar/models/order_model.dart';
 import 'package:kopidalar/util/session_util.dart';
+import 'package:kopidalar/models/goods_model.dart';
 
 class GoodsPage extends StatefulWidget {
   @override
@@ -10,6 +12,7 @@ class GoodsPage extends StatefulWidget {
 
 class _GoodsState extends State<GoodsPage>{
   String _userID = "";
+  final orders = OrdersModel();
 
   _GoodsState() {
     getUserLogin().then((val) => setState(() {
@@ -17,6 +20,9 @@ class _GoodsState extends State<GoodsPage>{
         }
       )
     );
+    if(Cart.orders != null){
+      orders.addToList(Cart.orders);
+    }
   }
 
   @override
@@ -62,20 +68,25 @@ class _GoodsState extends State<GoodsPage>{
       );
     }
     
-  int _qty = 1;
   Widget _buildListItem(BuildContext context, DocumentSnapshot document){
+    Goods _goods = Goods(document.documentID, document['name'], document['price'], document['img_url'], document['uid'], document['uname']);
 
     Widget _buildQuantityText(){
-      if(_qty > 0){
-        return new Text(
-          "$_qty",
-          style: new TextStyle(
-            fontSize: 22.0, 
-            fontWeight: FontWeight.bold,
-            color: Colors.brown,
-          ),
-          textAlign: TextAlign.center,
-        );
+      if(Cart.orders != null){
+        if(orders.itemLength(document.documentID) > 0){
+          return new Text(
+            orders.itemLength(document.documentID).toString(),
+            style: new TextStyle(
+              fontSize: 22.0, 
+              fontWeight: FontWeight.bold,
+              color: Colors.brown,
+            ),
+            textAlign: TextAlign.center,
+          );
+        }
+        else{
+          return new Container();
+        }
       }
       else{
         return new Container();
@@ -83,24 +94,30 @@ class _GoodsState extends State<GoodsPage>{
     }
 
     Widget _buildMinButton(){
-      if(_qty > 0){
-        return new RawMaterialButton(
-          shape: new CircleBorder(),
-          fillColor: Colors.white,
-          child: Text(
-            '-',
-            style: new TextStyle(
-              fontSize: 22.0, 
-              fontWeight: FontWeight.bold,
-              color: Colors.brown,
+      if(Cart.orders != null){
+        if(orders.itemLength(document.documentID) > 0){
+          return new RawMaterialButton(
+            shape: new CircleBorder(),
+            fillColor: Colors.white,
+            child: Text(
+              '-',
+              style: new TextStyle(
+                fontSize: 22.0, 
+                fontWeight: FontWeight.bold,
+                color: Colors.brown,
+              ),
             ),
-          ),
-          onPressed: () => {
-            setState(() {
-              _qty -= 1;
-            })
-          },
-        );
+            onPressed: () => {
+              setState(() {
+                orders.remove(_goods);
+                Cart.orders = orders.goodsList;
+              })
+            },
+          );
+        }
+        else{
+          return new Container();
+        }
       }
       else{
         return new Container();
@@ -170,7 +187,8 @@ class _GoodsState extends State<GoodsPage>{
                                   ),
                                   child: RaisedButton(
                                     onPressed: (){
-                                      createRecord(document);
+                                      // createRecord(document);
+                                      orders.add(_goods);
                                       Navigator.pop(context, false);
                                     },
                                     padding: EdgeInsets.all(13.0),
@@ -256,8 +274,12 @@ class _GoodsState extends State<GoodsPage>{
                   ),
                   onPressed: () => {
                     setState(() {
-                      _qty += 1;
-                    })
+                      orders.add(_goods);
+                      Cart.orders = orders.goodsList;
+                      for(int i = Cart.orders.length - 1; i >= 0; i--){
+                        print(Cart.orders[i].name);
+                      }
+                    }),
                   },
                 ),
               ),

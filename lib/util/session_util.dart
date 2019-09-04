@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kopidalar/models/goods_model.dart';
+
+class Cart{
+  static List<Goods> orders;
+}
 
 Future<bool> saveUserLogin(FirebaseUser user) async{
   SharedPreferences prefs = await SharedPreferences.getInstance();

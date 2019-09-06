@@ -276,9 +276,6 @@ class _GoodsState extends State<GoodsPage>{
                     setState(() {
                       orders.add(_goods);
                       Cart.orders = orders.goodsList;
-                      for(int i = Cart.orders.length - 1; i >= 0; i--){
-                        print(Cart.orders[i].name);
-                      }
                     }),
                   },
                 ),

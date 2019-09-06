@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:kopidalar/pages/accounts/registerUser.dart';
 import 'package:kopidalar/pages/accounts/signIn.dart';
 import 'package:kopidalar/pages/home.dart';
 import 'package:kopidalar/util/session_util.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -15,9 +17,14 @@ class _SplashState extends State<SplashPage> {
     Future.delayed(Duration (seconds: 3)).then((_) async{
       String authID = await getUserLogin();
       if(authID != null && authID != ""){
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomePage())
-        );
+        Query userData = Firestore.instance.collection('users').where("auth_uid", isEqualTo: authID);
+        QuerySnapshot userDataSnapshot = await userData.getDocuments();
+        if(userDataSnapshot.documents.isEmpty){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterUserPage()));
+        }
+        else{
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        }
       }
       else{
         Navigator.of(context).pushReplacement(

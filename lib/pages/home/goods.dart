@@ -359,16 +359,4 @@ class _GoodsState extends State<GoodsPage>{
       }
     );
   }
-
-  Future<DocumentSnapshot> getUserByAuthUID(String auth_uid) async{
-    Query user = Firestore.instance.collection('users').where("auth_uid", isEqualTo: auth_uid);
-    QuerySnapshot data = await user.getDocuments();
-    return data.documents[0];
-  }
-
-  Future<DocumentSnapshot> getGoodsByAuthUID(String auth_uid) async{
-    Query user = Firestore.instance.collection('goods').where("uid", isEqualTo: auth_uid);
-    QuerySnapshot data = await user.getDocuments();
-    return data.documents[0];
-  }
 }

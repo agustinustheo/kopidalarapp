@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kopidalar/pages/accounts/registerUser.dart';
 import 'package:kopidalar/pages/accounts/signUp.dart';
 import 'package:kopidalar/pages/home.dart';
 import 'package:kopidalar/util/session_util.dart';
@@ -173,7 +174,14 @@ class _LoginPageState extends State<LoginPage> {
         );
         FirebaseUser user = authResult.user;
         saveUserLogin(user);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        Query userData = Firestore.instance.collection('users').where("auth_uid", isEqualTo: user.uid);
+        QuerySnapshot userDataSnapshot = await userData.getDocuments();
+        if(userDataSnapshot.documents.isEmpty){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterUserPage()));
+        }
+        else{
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+        }
       }
       catch(e){
         print(e);

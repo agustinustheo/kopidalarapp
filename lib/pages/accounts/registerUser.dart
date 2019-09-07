@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:kopidalar/pages/home.dart';
-import 'package:kopidalar/pages/splash/splash.dart';
 import 'package:kopidalar/util/session_util.dart';
 
 class RegisterUserPage extends StatefulWidget {
@@ -220,7 +219,7 @@ class _RegisterUserState extends State<RegisterUserPage>{
                       'Close',
                       style: new TextStyle(
                         color: Colors.red[600],
-                  ),
+                      ),
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();

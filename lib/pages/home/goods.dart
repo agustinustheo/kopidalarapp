@@ -27,44 +27,49 @@ class _GoodsState extends State<GoodsPage>{
 
   @override
     Widget build(BuildContext context){
-      return new Padding(
-        padding: const EdgeInsets.only(
-          top: 25.0, 
-          left: 12.0, 
-          right: 12.0,
-        ),
-        child: new Center(
-          child: new Column(
-            children: <Widget>[
-              new Container(
-                child: new Image.asset(
-                    'assets/graphics/kopidalar_text_logo.png',
-                    height: 60.0,
+      return Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 25.0, 
+              left: 12.0, 
+              right: 12.0,
+            ),
+            child: new Center(
+              child: new Column(
+                children: <Widget>[
+                  new Container(
+                    child: new Image.asset(
+                        'assets/graphics/kopidalar_text_logo.png',
+                        height: 60.0,
+                      ),
+                      alignment: Alignment(-0.9, 0.0),
                   ),
-                  alignment: Alignment(-0.9, 0.0),
+                  new Divider(
+                    color: Colors.grey,
+                  ),
+                  new Expanded(
+                    child: new StreamBuilder(
+                      stream: Firestore.instance.collection('goods').snapshots(),
+                      builder: (context, snapshot){
+                        if(!snapshot.hasData) return new Center(child: new CircularProgressIndicator());
+                        return ListView.separated(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) =>
+                            _buildListItem(context, snapshot.data.documents[index]),
+                          separatorBuilder: (context, index) {
+                            return Divider();
+                          },
+                        );
+                      }
+                    ),
+                  ),
+                ]
               ),
-              new Divider(
-                color: Colors.grey,
-              ),
-              new Expanded(
-                child: new StreamBuilder(
-                  stream: Firestore.instance.collection('goods').snapshots(),
-                  builder: (context, snapshot){
-                    if(!snapshot.hasData) return new Center(child: new CircularProgressIndicator());
-                    return ListView.separated(
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context, index) =>
-                        _buildListItem(context, snapshot.data.documents[index]),
-                      separatorBuilder: (context, index) {
-                        return Divider();
-                      },
-                    );
-                  }
-                ),
-              ),
-            ]
+            ),
           ),
-        ),
+          _showCart(context),
+        ],
       );
     }
     
@@ -297,6 +302,82 @@ class _GoodsState extends State<GoodsPage>{
           ),
         ),
       );
+    }
+  }
+
+  Widget _showCart(BuildContext context){
+      if(Cart.orders != null){
+        if(Cart.orders.length > 0){
+          int totalPrice = 0;
+          Cart.orders.forEach((value) {
+            totalPrice += value.price;
+          });
+          return new Positioned(
+            bottom: 0.0,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.only(
+                top: 15.0,
+                bottom: 15.0,
+                left: 20.0,
+                right: 15.0,
+              ),
+              color: Colors.grey[50],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Material(
+                        child: Text(
+                          'Total',
+                          style: new TextStyle(
+                            fontSize: 16.0, 
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      Material(
+                        child: Text(
+                          'Rp. ' + totalPrice.toString(),
+                          style: new TextStyle(
+                            fontSize: 22.0, 
+                            color: Colors.brown,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: 150.0,
+                    child: RaisedButton(
+                      onPressed: (){},
+                      padding: EdgeInsets.all(15.0),
+                      color: Colors.yellow[900],
+                      child: Text(
+                        'View Cart',
+                        style: new TextStyle(
+                          fontSize: 16.0, 
+                          color: Colors.white
+                        ),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(25.0)
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+      }
+      else{
+        return new Container();
+      }
+    }
+    else{
+      return new Container();
     }
   }
 

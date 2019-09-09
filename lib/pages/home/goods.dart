@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kopidalar/models/order_model.dart';
+import 'package:kopidalar/pages/home/checkout/cart.dart';
 import 'package:kopidalar/util/session_util.dart';
 import 'package:kopidalar/models/goods_model.dart';
 
@@ -192,7 +193,6 @@ class _GoodsState extends State<GoodsPage>{
                                   ),
                                   child: RaisedButton(
                                     onPressed: (){
-                                      // createRecord(document);
                                       orders.add(_goods);
                                       Navigator.pop(context, false);
                                     },
@@ -352,7 +352,18 @@ class _GoodsState extends State<GoodsPage>{
                   SizedBox(
                     width: 150.0,
                     child: RaisedButton(
-                      onPressed: (){},
+                      onPressed: (){
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => CartPage())
+                        )
+                        .then(
+                          (result){
+                            if(result == 'success'){
+                              orders.removeAllFromList();
+                            }
+                          }
+                        );
+                      },
                       padding: EdgeInsets.all(15.0),
                       color: Colors.yellow[900],
                       child: Text(
@@ -379,62 +390,5 @@ class _GoodsState extends State<GoodsPage>{
     else{
       return new Container();
     }
-  }
-
-  void createRecord(DocumentSnapshot document) async{
-    final databaseReference = Firestore.instance;
-    
-    DocumentReference transaction = await databaseReference.collection("transactions")
-      .add({
-        'time': DateTime.now(),
-      }
-    );
-
-    DocumentSnapshot buyer = await getUserByAuthUID(_userID);
-    DocumentSnapshot seller = await getUserByAuthUID(document['uid']);
-    DocumentSnapshot item = await getGoodsByAuthUID(document['uid']);
-
-    databaseReference.collection("transactions").document(transaction.documentID).collection("buyer")
-      .add({
-        'auth_uid': buyer['auth_uid'],
-        'name': buyer['fullname'],
-        'phone': buyer['phone'],
-      }
-    );
-
-    databaseReference.collection("transactions").document(transaction.documentID).collection("seller")
-      .add({
-        'auth_uid': seller['auth_uid'],
-        'name': seller['fullname'],
-        'phone': seller['phone'],
-      }
-    );
-    
-    databaseReference.collection("transactions").document(transaction.documentID).collection("item")
-      .add({
-        'id': item.documentID,
-        'name': item['name'],
-        'price': item['price'],
-        'qty': '2',
-      }
-    );
-    
-    databaseReference.collection("notifications")
-      .add({
-        'auth_uid': seller['auth_uid'],
-        'message': 'You have a pending order',
-        'time':  DateTime.now(),
-        'transaction_id': transaction.documentID,
-      }
-    );
-
-    databaseReference.collection("notifications")
-      .add({
-        'auth_uid': buyer['auth_uid'],
-        'message': 'Your order is being processed',
-        'time':  DateTime.now(),
-        'transaction_id': transaction.documentID,
-      }
-    );
   }
 }

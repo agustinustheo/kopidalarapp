@@ -76,34 +76,21 @@ class _ProfileState extends State<ProfilePage>{
 
   
   Widget _buildProfile(BuildContext context, DocumentSnapshot document){
-    final Shader _linearGradient = LinearGradient(
-      colors: <Color>[
-        Color(0xff422605), 
-        Color(0xffb3671b),
-      ],
-    ).createShader(
-      Rect.fromLTWH(
-        0.0, 
-        0.0, 
-        200.0, 
-        70.0
-      )
-    );
-
-    final Shader _linearGradientButton = LinearGradient(
-      colors: <Color>[
-        Color(0xff422605), 
-        Color(0xffb3671b),
-      ],
-    ).createShader(
-      Rect.fromLTWH(
-        160.0, 
-        0.0, 
-        40.0, 
-        5.0
-      )
-    );
-
+    Widget _imageLoad(){
+      if(document['profile_pic_url'] == ""){
+        return new Image.asset(
+          'assets/graphics/user/anonymous.jpg',
+        );
+      }
+      else{
+        return new FadeInImage(
+          image: NetworkImage(document['profile_pic_url']),
+          placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
+          fadeInDuration: Duration(milliseconds: 100),
+          fadeOutDuration: Duration(milliseconds: 100),
+        );
+      }
+    }
     return ListTile(
       title: Column(
         children: <Widget> [
@@ -115,12 +102,7 @@ class _ProfileState extends State<ProfilePage>{
             ),
             child: new ClipRRect(
               borderRadius: new BorderRadius.circular(100.0),
-              child: FadeInImage(
-                image: NetworkImage(document['profile_pic_url']),
-                placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-                fadeInDuration: Duration(milliseconds: 100),
-                fadeOutDuration: Duration(milliseconds: 100),
-              ),
+              child: _imageLoad(),
             ),
           ),
           new Text(
@@ -128,7 +110,7 @@ class _ProfileState extends State<ProfilePage>{
             style: new TextStyle(
               fontSize: 24.0, 
               fontWeight: FontWeight.bold,
-              foreground: Paint()..shader = _linearGradient,
+              color: Colors.brown,
             ),
           ),
           new Container(
@@ -145,7 +127,7 @@ class _ProfileState extends State<ProfilePage>{
                   'Sign Out',
                   style: new TextStyle(
                     fontSize: 16.0, 
-                    foreground: Paint()..shader = _linearGradientButton,
+                    color: Colors.brown,
                   ),
                 ),
                 shape: RoundedRectangleBorder(

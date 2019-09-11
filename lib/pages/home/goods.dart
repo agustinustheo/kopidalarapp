@@ -13,6 +13,7 @@ class GoodsPage extends StatefulWidget {
 
 class _GoodsState extends State<GoodsPage>{
   String _userID = "";
+  bool _cartIsNotEmpty = false;
   final orders = OrdersModel();
 
   _GoodsState() {
@@ -22,6 +23,7 @@ class _GoodsState extends State<GoodsPage>{
       )
     );
     if(Cart.orders != null){
+      _cartIsNotEmpty = true;
       orders.addToList(Cart.orders);
     }
   }
@@ -31,10 +33,11 @@ class _GoodsState extends State<GoodsPage>{
       return Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
               top: 25.0, 
               left: 12.0, 
               right: 12.0,
+              bottom: (_cartIsNotEmpty == true ? 50.0 : 0.0)
             ),
             child: new Center(
               child: new Column(
@@ -117,6 +120,9 @@ class _GoodsState extends State<GoodsPage>{
               setState(() {
                 orders.remove(_goods);
                 Cart.orders = orders.goodsList;
+                if(Cart.orders.length == 0){
+                  _cartIsNotEmpty = false;
+                }
               })
             },
           );
@@ -147,11 +153,14 @@ class _GoodsState extends State<GoodsPage>{
                   bottom: 20.0, 
                   right: 10.0,
                 ),
-                child: FadeInImage(
-                  image: NetworkImage(document['img_url']),
-                  placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-                  fadeInDuration: Duration(milliseconds: 100),
-                  fadeOutDuration: Duration(milliseconds: 100),
+                child: new ClipRRect(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  child: FadeInImage(
+                    image: NetworkImage(document['img_url']),
+                    placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
+                    fadeInDuration: Duration(milliseconds: 100),
+                    fadeOutDuration: Duration(milliseconds: 100),
+                  ),
                 ),
               ),
               onTap: (){
@@ -161,7 +170,7 @@ class _GoodsState extends State<GoodsPage>{
                     return AlertDialog(
                       content: Form(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Container(
@@ -193,13 +202,12 @@ class _GoodsState extends State<GoodsPage>{
                                   ),
                                   child: RaisedButton(
                                     onPressed: (){
-                                      orders.add(_goods);
                                       Navigator.pop(context, false);
                                     },
                                     padding: EdgeInsets.all(13.0),
                                     color: Colors.white,
                                     child: Text(
-                                      'Buy',
+                                      'Close',
                                       style: new TextStyle(
                                         fontSize: 16.0, 
                                         color: Colors.brown,
@@ -225,7 +233,7 @@ class _GoodsState extends State<GoodsPage>{
               children: <Widget>[
                 Container(
                   child: Text(
-                    document['name'],
+                    document['name'].length > 11 ? document['name'].substring(0, 8) + '...' : document['name'],
                     style: new TextStyle(
                       fontSize: 24.0, 
                       fontWeight: FontWeight.bold,
@@ -279,6 +287,7 @@ class _GoodsState extends State<GoodsPage>{
                   ),
                   onPressed: () => {
                     setState(() {
+                      _cartIsNotEmpty = true;
                       orders.add(_goods);
                       Cart.orders = orders.goodsList;
                     }),

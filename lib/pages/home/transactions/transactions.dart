@@ -341,11 +341,14 @@ class _TransactionState extends State<TransactionPage>{
       v.add(
         new ListTile(
           leading: Container(
-            child: FadeInImage(
-              image: NetworkImage(goods['img_url']),
-              placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-              fadeInDuration: Duration(milliseconds: 100),
-              fadeOutDuration: Duration(milliseconds: 100),
+            child: new ClipRRect(
+              borderRadius: new BorderRadius.circular(10.0),
+              child: FadeInImage(
+                image: NetworkImage(goods['img_url']),
+                placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
+                fadeInDuration: Duration(milliseconds: 100),
+                fadeOutDuration: Duration(milliseconds: 100),
+              ),
             ),
           ),
           title: new Text(

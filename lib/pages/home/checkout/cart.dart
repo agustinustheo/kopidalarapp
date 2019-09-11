@@ -67,7 +67,6 @@ class _CartState extends State<CartPage>{
             'Cart',
             style: new TextStyle(
               fontWeight: FontWeight.bold,
-              // foreground: Paint()..shader = _linearGradientTtile,
               color: Colors.brown,
             ),
           ),
@@ -219,11 +218,14 @@ class _CartState extends State<CartPage>{
     v.add(
       new ListTile(
         leading: Container(
-          child: FadeInImage(
-            image: NetworkImage(imgUrl),
-            placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-            fadeInDuration: Duration(milliseconds: 100),
-            fadeOutDuration: Duration(milliseconds: 100),
+          child: new ClipRRect(
+            borderRadius: new BorderRadius.circular(10.0),
+            child: FadeInImage(
+              image: NetworkImage(imgUrl),
+              placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
+              fadeInDuration: Duration(milliseconds: 100),
+              fadeOutDuration: Duration(milliseconds: 100),
+            ),
           ),
         ),
         title: new Text(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:kopidalar/pages/home/transactions/transactions.dart';
 import 'package:kopidalar/util/session_util.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -14,7 +15,9 @@ class _NotificationState extends State<NotificationPage>{
   _NotificationState() {
     getUserLogin().then((val) => setState(() {
           _userID = val;
-        }));
+        }
+      )
+    );
   }
 
   @override
@@ -109,11 +112,18 @@ class _NotificationState extends State<NotificationPage>{
                       ),
                     ],
                   ),
-                  Text(
-                    'View transaction',
-                    style: new TextStyle(
-                      fontSize: 14.0, 
-                      color: Colors.grey,
+                  InkWell(
+                    onTap: (){
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => TransactionPage(transactionID: document['transaction_id'], notificationType: document['notification_type']))
+                      );
+                    },
+                    child: Text(
+                      'View transaction',
+                      style: new TextStyle(
+                        fontSize: 14.0, 
+                        color: Colors.grey,
+                      ),
                     ),
                   ),
                 ],

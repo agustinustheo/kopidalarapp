@@ -298,6 +298,7 @@ class _CartState extends State<CartPage>{
             'message': 'You have a pending order',
             'time':  DateTime.now(),
             'transaction_id': transaction.documentID,
+            'notification_type': 'seller',
           }
         );
 
@@ -307,6 +308,7 @@ class _CartState extends State<CartPage>{
             'message': 'Your order is being processed',
             'time':  DateTime.now(),
             'transaction_id': transaction.documentID,
+            'notification_type': 'buyer',
           }
         );
       }
@@ -316,6 +318,7 @@ class _CartState extends State<CartPage>{
           'id': x[0].id,
           'name': x[0].name,
           'price': x[0].price,
+          'img_url': x[0].img_url,
           'qty': x.length,
         }
       );

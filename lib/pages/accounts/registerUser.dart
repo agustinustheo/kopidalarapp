@@ -22,20 +22,6 @@ class _RegisterUserState extends State<RegisterUserPage>{
 
   @override
   Widget build(BuildContext context){
-    final Shader _linearGradientTtile = LinearGradient(
-      colors: <Color>[
-        Color(0xff422605), 
-        Color(0xffb3671b),
-      ],
-    ).createShader(
-      Rect.fromLTWH(
-        0.0, 
-        0.0, 
-        60.0, 
-        10.0
-      )
-    );
-
     return new Scaffold(
       resizeToAvoidBottomPadding: false,
       body: Form(

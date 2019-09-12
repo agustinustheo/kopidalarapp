@@ -202,7 +202,7 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
             'img_url': "",
           }
         );
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+        Navigator.pop(context);
       }
       catch(e){
         print(e);

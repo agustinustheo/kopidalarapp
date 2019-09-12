@@ -22,134 +22,179 @@ class _RegisterUserState extends State<RegisterUserPage>{
 
   @override
   Widget build(BuildContext context){
+    final Shader _linearGradientTtile = LinearGradient(
+      colors: <Color>[
+        Color(0xff422605), 
+        Color(0xffb3671b),
+      ],
+    ).createShader(
+      Rect.fromLTWH(
+        0.0, 
+        0.0, 
+        60.0, 
+        10.0
+      )
+    );
+
     return new Scaffold(
+      // appBar: AppBar(
+      //   iconTheme: IconThemeData(
+      //     color: Colors.brown, //change your color here
+      //   ),
+      //   title: new Text(
+      //     'Create Profile',
+      //     style: new TextStyle(
+      //       fontWeight: FontWeight.bold,
+      //       foreground: Paint()..shader = _linearGradientTtile,
+      //     ),
+      //   ),
+      //   backgroundColor: Colors.white,
+      // ),
       resizeToAvoidBottomPadding: false,
       body: Form(
         key: _formKey,
         child: Align(
           alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: new ListView(
             children: <Widget>[
-              new Container(
-                width: 150.0,
-                padding: const EdgeInsets.only(
-                  top: 10.0, 
-                  bottom: 20.0, 
-                ),
-                child: new ClipRRect(
-                  borderRadius: new BorderRadius.circular(100.0),
-                  child: FadeInImage(
-                    image: NetworkImage('https://www.povertyalliance.org/wp-content/uploads/2019/03/Portrait_Placeholder.png'),
-                    placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-                    fadeInDuration: Duration(milliseconds: 100),
-                    fadeOutDuration: Duration(milliseconds: 100),
-                  ),
-                ),
-              ),
-              new Container(
-                margin: const EdgeInsets.all(
-                  10.0,
-                ),
-                child: new SizedBox(
-                  width: 275.0,
-                  child: TextFormField(
-                    cursorColor: Colors.brown,
-                    validator: (input){
-                      if(input.isEmpty){
-                        return 'Please type a username';
-                      }
-                    },
-                    onSaved: (input) => _username = input,
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      labelStyle: TextStyle(
-                        color: Colors.brown,
-                      ),
+              new Column(
+                children: <Widget>[
+                  new Container(
+                    padding: EdgeInsets.only(
+                      top: 30.0,
+                      bottom: 10.0,
                     ),
-                    style: TextStyle(
-                      color: Colors.brown,
-                    ),
-                  ),
-                ),
-              ),
-              new Container(
-                margin: const EdgeInsets.all(
-                  10.0,
-                ),
-                child: new SizedBox(
-                  width: 275.0,
-                  child: TextFormField(
-                    cursorColor: Colors.brown,
-                    validator: (input){
-                      if(input.isEmpty){
-                        return 'Please type your fullname';
-                      }
-                    },
-                    onSaved: (input) => _fullname = input,
-                    decoration: InputDecoration(
-                      labelText: 'Fullname',
-                      labelStyle: TextStyle(
-                        color: Colors.brown,
-                      ),
-                    ),
-                    style: TextStyle(
-                      color: Colors.brown,
-                    ),
-                  ),
-                ),
-              ),
-              new Container(
-                margin: const EdgeInsets.all(
-                  10.0,
-                ),
-                child: new SizedBox(
-                  width: 275.0,
-                  child: TextFormField(
-                    cursorColor: Colors.brown,
-                    validator: (input){
-                      if(input.isEmpty){
-                        return 'Please provide your phone number';
-                      }
-                      else if(input.length < 8){
-                        return 'A phone number must be more than 7 characters';
-                      }
-                    },
-                    onSaved: (input) => _phone = input,
-                    decoration: InputDecoration(
-                      labelText: 'Phone',
-                      labelStyle: TextStyle(
-                        color: Colors.brown,
-                      ),
-                    ),
-                    style: TextStyle(
-                      color: Colors.brown,
-                    ),
-                  ),
-                ),
-              ),
-              new Container(
-                margin: const EdgeInsets.all(
-                  10.0,
-                ),
-                child: new SizedBox(
-                  width: 255.0,
-                  child: RaisedButton(
-                    onPressed: saveUserRecord,
-                    padding: EdgeInsets.all(13.0),
-                    color: Colors.brown,
-                    child: Text(
-                      'Save Profile',
+                    child: new Text(
+                      'Create Profile',
                       style: new TextStyle(
-                        fontSize: 16.0, 
-                        color: Colors.white,
+                        color: Colors.brown,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(25.0)
+                    alignment: Alignment(-0.5, 0.0),
+                  ),
+                  // new Container(
+                  //   width: 100.0,
+                  //   padding: const EdgeInsets.only(
+                  //     top: 10.0, 
+                  //     bottom: 10.0, 
+                  //   ),
+                  //   child: new ClipRRect(
+                  //     borderRadius: new BorderRadius.circular(100.0),
+                  //     child: FadeInImage(
+                  //       image: NetworkImage('https://www.povertyalliance.org/wp-content/uploads/2019/03/Portrait_Placeholder.png'),
+                  //       placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
+                  //       fadeInDuration: Duration(milliseconds: 100),
+                  //       fadeOutDuration: Duration(milliseconds: 100),
+                  //     ),
+                  //   ),
+                  // ),
+                  new Container(
+                    margin: const EdgeInsets.all(
+                      5.0,
+                    ),
+                    child: new SizedBox(
+                      width: 275.0,
+                      child: TextFormField(
+                        cursorColor: Colors.brown,
+                        validator: (input){
+                          if(input.isEmpty){
+                            return 'Please type a username';
+                          }
+                        },
+                        onSaved: (input) => _username = input,
+                        decoration: InputDecoration(
+                          labelText: 'Username',
+                          labelStyle: TextStyle(
+                            color: Colors.brown,
+                          ),
+                        ),
+                        style: TextStyle(
+                          color: Colors.brown,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  new Container(
+                    margin: const EdgeInsets.all(
+                      10.0,
+                    ),
+                    child: new SizedBox(
+                      width: 275.0,
+                      child: TextFormField(
+                        cursorColor: Colors.brown,
+                        validator: (input){
+                          if(input.isEmpty){
+                            return 'Please type your fullname';
+                          }
+                        },
+                        onSaved: (input) => _fullname = input,
+                        decoration: InputDecoration(
+                          labelText: 'Fullname',
+                          labelStyle: TextStyle(
+                            color: Colors.brown,
+                          ),
+                        ),
+                        style: TextStyle(
+                          color: Colors.brown,
+                        ),
+                      ),
+                    ),
+                  ),
+                  new Container(
+                    margin: const EdgeInsets.all(
+                      10.0,
+                    ),
+                    child: new SizedBox(
+                      width: 275.0,
+                      child: TextFormField(
+                        cursorColor: Colors.brown,
+                        validator: (input){
+                          if(input.isEmpty){
+                            return 'Please provide your phone number';
+                          }
+                          else if(input.length < 8){
+                            return 'A phone number must be more than 7 characters';
+                          }
+                        },
+                        onSaved: (input) => _phone = input,
+                        decoration: InputDecoration(
+                          labelText: 'Phone',
+                          labelStyle: TextStyle(
+                            color: Colors.brown,
+                          ),
+                        ),
+                        style: TextStyle(
+                          color: Colors.brown,
+                        ),
+                      ),
+                    ),
+                  ),
+                  new Container(
+                    margin: const EdgeInsets.all(
+                      10.0,
+                    ),
+                    child: new SizedBox(
+                      width: 255.0,
+                      child: RaisedButton(
+                        onPressed: saveUserRecord,
+                        padding: EdgeInsets.all(13.0),
+                        color: Colors.brown,
+                        child: Text(
+                          'Save Profile',
+                          style: new TextStyle(
+                            fontSize: 16.0, 
+                            color: Colors.white,
+                          ),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(25.0)
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

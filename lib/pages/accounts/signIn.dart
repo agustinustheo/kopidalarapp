@@ -173,14 +173,52 @@ class _LoginPageState extends State<LoginPage> {
           password: _password
         );
         FirebaseUser user = authResult.user;
-        saveUserLogin(user);
-        Query userData = Firestore.instance.collection('users').where("auth_uid", isEqualTo: user.uid);
-        QuerySnapshot userDataSnapshot = await userData.getDocuments();
-        if(userDataSnapshot.documents.isEmpty){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterUserPage()));
+        if(user.isEmailVerified){
+          saveUserLogin(user);
+          Query userData = Firestore.instance.collection('users').where("auth_uid", isEqualTo: user.uid);
+          QuerySnapshot userDataSnapshot = await userData.getDocuments();
+          if(userDataSnapshot.documents.isEmpty){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterUserPage()));
+          }
+          else{
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+          }
         }
         else{
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+          return showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  'Error',
+                  style: new TextStyle(
+                    color: Colors.red[600],
+                  ),
+                ),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text('Email is not verified.\nPlease verify your email before login!'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text(
+                      'Close',
+                      style: new TextStyle(
+                        color: Colors.red[600],
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
         }
       }
       catch(e){

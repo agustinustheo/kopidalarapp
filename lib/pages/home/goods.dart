@@ -37,7 +37,7 @@ class _GoodsState extends State<GoodsPage>{
               top: 25.0, 
               left: 12.0, 
               right: 12.0,
-              bottom: (_cartIsNotEmpty == true ? 50.0 : 0.0)
+              bottom: (_cartIsNotEmpty == true ? 70.0 : 0.0)
             ),
             child: new Center(
               child: new Column(

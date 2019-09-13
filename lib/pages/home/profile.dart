@@ -16,11 +16,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfileState extends State<ProfilePage>{
   String _userID = "";
+  bool _uploadingImage = false;
 
   _ProfileState() {
     getUserLogin().then((val) => setState(() {
           _userID = val;
-        }));
+        }
+      )
+    );
   }
 
   @override
@@ -94,18 +97,38 @@ class _ProfileState extends State<ProfilePage>{
   
   Widget _buildProfile(BuildContext context, DocumentSnapshot document){
     Widget _imageLoad(){
-      if(document['profile_pic_url'] == ""){
-        return new Image.asset(
-          'assets/graphics/user/anonymous.jpg',
+      if(_uploadingImage){
+        return new Stack(
+          children: <Widget>[
+            new Opacity(
+              opacity: 0.1,
+              child:  Image.asset(
+                'assets/graphics/user/anonymous.jpg',
+              ),
+            ),
+            new Padding(
+              padding: EdgeInsets.all(50.0),
+              child: new Center(
+                child: new CircularProgressIndicator(),
+              ),
+            ),
+          ]
         );
       }
       else{
-        return new FadeInImage(
-          image: NetworkImage(document['profile_pic_url']),
-          placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-          fadeInDuration: Duration(milliseconds: 100),
-          fadeOutDuration: Duration(milliseconds: 100),
-        );
+        if(document['profile_pic_url'] == ""){
+          return new Image.asset(
+            'assets/graphics/user/anonymous.jpg',
+          );
+        }
+        else{
+          return new FadeInImage(
+            image: NetworkImage(document['profile_pic_url']),
+            placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
+            fadeInDuration: Duration(milliseconds: 100),
+            fadeOutDuration: Duration(milliseconds: 100),
+          );
+        }
       }
     }
     return Container(
@@ -123,7 +146,16 @@ class _ProfileState extends State<ProfilePage>{
                 child: _imageLoad(),
               ),
             ),
-            onTap: _changeProfilePicture,
+            onTap: (){
+              setState(() {
+               _uploadingImage = true; 
+              });
+              _changeProfilePicture().then((_){
+                setState(() {
+                _uploadingImage = false; 
+                });
+              });
+            },
           ),
           new Text(
             document['fullname'],
@@ -244,12 +276,15 @@ class _ProfileState extends State<ProfilePage>{
                               ),
                               child: document['img_url'] != '' ? Image.network(document['img_url']) : Container(),
                             ),
-                            Text(
-                              document['name'],
-                              style: new TextStyle(
-                                fontSize: 24.0, 
-                                fontWeight: FontWeight.bold,
-                                color: Colors.brown,
+                            Container(
+                              padding: EdgeInsets.all(5.0),
+                              child: Text(
+                                document['name'],
+                                style: new TextStyle(
+                                  fontSize: 24.0, 
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.brown,
+                                ),
                               ),
                             ),
                             Column(
@@ -348,12 +383,14 @@ class _ProfileState extends State<ProfilePage>{
         statusBarColor: Colors.black,
         toolbarTitle: 'Crop Image'
       );
+    }
 
-      StorageUploadTask _uploadTask = _storage.ref().child('goods/${DateTime.now()}.jpg').putFile(selected);
+    if(selected != null){
+      DocumentSnapshot userData = await getUserByAuthUID(_userID);
+
+      StorageUploadTask _uploadTask = _storage.ref().child('user_photos/${userData['username']}_${DateTime.now()}.jpg').putFile(selected);
       StorageTaskSnapshot _storageTaskSnapshot = await _uploadTask.onComplete;
       downloadUrl = await _storageTaskSnapshot.ref.getDownloadURL();
-
-      DocumentSnapshot userData = await getUserByAuthUID(_userID);
 
       Firestore.instance.collection("users").document(userData.documentID)
       .updateData({

@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kopidalar/pages/home/goods/addGoods.dart';
 import 'package:kopidalar/pages/splash/splash.dart';
 import 'package:kopidalar/util/session_util.dart';
+import 'dart:io';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -107,16 +111,19 @@ class _ProfileState extends State<ProfilePage>{
     return Container(
       child: Column(
         children: <Widget> [
-          new Container(
-            width: 150.0,
-            padding: const EdgeInsets.only(
-              top: 10.0, 
-              bottom: 20.0, 
+          new GestureDetector(
+            child: new Container(
+              width: 150.0,
+              padding: const EdgeInsets.only(
+                top: 10.0, 
+                bottom: 20.0, 
+              ),
+              child: new ClipRRect(
+                borderRadius: new BorderRadius.circular(100.0),
+                child: _imageLoad(),
+              ),
             ),
-            child: new ClipRRect(
-              borderRadius: new BorderRadius.circular(100.0),
-              child: _imageLoad(),
-            ),
+            onTap: _changeProfilePicture,
           ),
           new Text(
             document['fullname'],
@@ -230,7 +237,7 @@ class _ProfileState extends State<ProfilePage>{
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Container(
+                            new Container(
                               width: 250.0,
                               padding: const EdgeInsets.only(
                                 top: 8.0, 
@@ -322,6 +329,36 @@ class _ProfileState extends State<ProfilePage>{
             child: new CircularProgressIndicator()
           ),
         ),
+      );
+    }
+  }
+
+  Future<void> _changeProfilePicture() async{
+    File selected = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final FirebaseStorage _storage = FirebaseStorage(storageBucket: 'gs://kopidalar.appspot.com/');
+    String downloadUrl = "";
+
+    if(selected != null){
+      selected = await ImageCropper.cropImage(
+        ratioX: 1,
+        ratioY: 1,
+        sourcePath: selected.path,
+        toolbarColor: Colors.white,
+        toolbarWidgetColor: Colors.purple[700],
+        statusBarColor: Colors.black,
+        toolbarTitle: 'Crop Image'
+      );
+
+      StorageUploadTask _uploadTask = _storage.ref().child('goods/${DateTime.now()}.jpg').putFile(selected);
+      StorageTaskSnapshot _storageTaskSnapshot = await _uploadTask.onComplete;
+      downloadUrl = await _storageTaskSnapshot.ref.getDownloadURL();
+
+      DocumentSnapshot userData = await getUserByAuthUID(_userID);
+
+      Firestore.instance.collection("users").document(userData.documentID)
+      .updateData({
+          'profile_pic_url': downloadUrl,
+        }
       );
     }
   }

@@ -108,11 +108,19 @@ class _RegisterUserState extends State<RegisterUserPage>{
                       child: TextFormField(
                         cursorColor: Colors.brown,
                         validator: (input){
+                          RegExp regExp = new RegExp(
+                            r"^\+?([ -]?\d+)+|\(\d+\)([ -]\d+)",
+                            caseSensitive: false,
+                            multiLine: false,
+                          );
                           if(input.isEmpty){
                             return 'Please provide your phone number';
                           }
                           else if(input.length < 8){
                             return 'A phone number must be more than 7 characters';
+                          }
+                          else if(!regExp.hasMatch(input)){
+                            return 'Phone number is not valid';
                           }
                         },
                         onSaved: (input) => _phone = input,

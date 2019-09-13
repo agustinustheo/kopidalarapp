@@ -180,12 +180,25 @@ class _GoodsState extends State<GoodsPage>{
                               ),
                               child: document['img_url'] != '' ? Image.network(document['img_url']) : Container(),
                             ),
-                            Text(
-                              document['name'],
-                              style: new TextStyle(
-                                fontSize: 24.0, 
-                                fontWeight: FontWeight.bold,
-                                color: Colors.brown,
+                            Container(
+                              padding: EdgeInsets.all(5.0),
+                              child: Text(
+                                document['name'],
+                                style: new TextStyle(
+                                  fontSize: 24.0, 
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.brown,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(2.0),
+                              child: Text(
+                                document['uname'],
+                                style: new TextStyle(
+                                  fontSize: 16.0, 
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                             Column(

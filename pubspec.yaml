@@ -22,6 +22,7 @@ dependencies:
   firebase_core: ^0.4.0+1
   firebase_auth: ^0.14.0+1
   firebase_storage:
+  firebase_messaging: ^5.0.2
   cloud_firestore:
   shared_preferences:
   intl: ^0.15.7

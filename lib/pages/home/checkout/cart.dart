@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -247,6 +248,7 @@ class _CartState extends State<CartPage>{
 
   void saveCart() async{
     final databaseReference = Firestore.instance;
+    final FirebaseMessaging _fcm = FirebaseMessaging();
 
     DocumentSnapshot buyer = await getUserByAuthUID(_userID);
     DocumentReference transaction;
@@ -312,6 +314,28 @@ class _CartState extends State<CartPage>{
             'transaction_id': transaction.documentID,
             'notification_type': 'buyer',
           }
+        );
+
+        _fcm.configure(
+          onMessage: (Map<String, dynamic> message) async{
+            print("onMessage:${message}");
+
+            final snackbar = SnackBar(
+              content: Text(''),
+              action: SnackBarAction(
+                label: 'Go',
+                onPressed: (){},
+              ),
+            );
+
+            Scaffold.of(context).showSnackBar(snackbar);
+          },
+          onResume: (Map<String, dynamic> message) async{
+            print("onResume:${message}");
+          },
+          onLaunch: (Map<String, dynamic> message) async{
+            print("onLaunch:${message}");
+          },
         );
       }
       

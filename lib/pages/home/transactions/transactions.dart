@@ -210,6 +210,33 @@ class _TransactionState extends State<TransactionPage>{
                         bottom: 2.0,
                       ),
                       child: Text(
+                        ('Phone'),
+                        style: new TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                    new Container(
+                      padding: EdgeInsets.all(
+                        2.0
+                      ),
+                      child: Text(
+                        (user == null ? '' : user['phone']),
+                        style: new TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
+                        ),
+                      ),
+                    ),
+                    new Container(
+                      padding: EdgeInsets.only(
+                        top: 15.0,
+                        left: 2.0,
+                        right: 2.0,
+                        bottom: 2.0,
+                      ),
+                      child: Text(
                         'Transaction ID',
                         style: new TextStyle(
                           color: Colors.grey,

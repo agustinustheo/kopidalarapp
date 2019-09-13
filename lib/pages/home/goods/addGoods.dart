@@ -17,6 +17,7 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
   String _name, _price;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   File _imageFile;
+  bool _isUploading = false;
 
   _AddGoodsState() {
     getUserLogin().then((val) => setState(() {
@@ -41,6 +42,27 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
         10.0
       )
     );
+
+    Widget _isLoading(){
+      if(_isUploading){
+        return new SizedBox(
+          height: 20.0,
+          width: 20.0,
+          child: new CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        );
+      }
+      else{
+        return new Text(
+          'Add New Goods',
+          style: new TextStyle(
+            fontSize: 16.0, 
+            color: Colors.white,
+          ),
+        );
+      }
+    }
 
     return new Scaffold(
       appBar: AppBar(
@@ -141,16 +163,17 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
                 child: new SizedBox(
                   width: 255.0,
                   child: RaisedButton(
-                    onPressed: saveGoodsRecord,
+                    onPressed: (){
+                      setState(() {
+                        _isUploading = true;
+                      });
+                      _saveGoodsRecord().then((_){
+                        _isUploading = false;
+                      });
+                    },
                     padding: EdgeInsets.all(13.0),
                     color: Colors.brown,
-                    child: Text(
-                      'Add New Goods',
-                      style: new TextStyle(
-                        fontSize: 16.0, 
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: _isLoading(),
                     shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(25.0)
                     ),
@@ -183,25 +206,26 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
     }
   }
 
-  Future<void> saveGoodsRecord() async{
+  Future<void> _saveGoodsRecord() async{
     final formState = _formKey.currentState;
     final databaseReference = Firestore.instance;
 
     if(formState.validate()){
+      FocusScope.of(context).requestFocus(FocusNode());
       formState.save();
 
       final FirebaseStorage _storage = FirebaseStorage(storageBucket: 'gs://kopidalar.appspot.com/');
       
       String downloadUrl = "";
 
-      if(_imageFile != null){
-        StorageUploadTask _uploadTask = _storage.ref().child('goods/${DateTime.now()}.jpg').putFile(_imageFile);
-        StorageTaskSnapshot _storageTaskSnapshot = await _uploadTask.onComplete;
-        downloadUrl = await _storageTaskSnapshot.ref.getDownloadURL();
-      }
-
       try{
         DocumentSnapshot userData = await getUserByAuthUID(_userID);
+
+        if(_imageFile != null){
+          StorageUploadTask _uploadTask = _storage.ref().child('goods/${_name}_${userData['username']}_${DateTime.now()}.jpg').putFile(_imageFile);
+          StorageTaskSnapshot _storageTaskSnapshot = await _uploadTask.onComplete;
+          downloadUrl = await _storageTaskSnapshot.ref.getDownloadURL();
+        }
 
         databaseReference.collection("goods")
           .add({

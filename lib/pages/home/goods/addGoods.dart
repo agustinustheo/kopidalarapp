@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:kopidalar/pages/home/profile.dart';
 import 'package:kopidalar/util/session_util.dart';
 
 class AddGoodsPage extends StatefulWidget {
@@ -71,12 +71,7 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
                   ),
                   child: new ClipRRect(
                     borderRadius: new BorderRadius.circular(20.0),
-                    child: FadeInImage(
-                      image: NetworkImage('https://www.povertyalliance.org/wp-content/uploads/2019/03/Portrait_Placeholder.png'),
-                      placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-                      fadeInDuration: Duration(milliseconds: 100),
-                      fadeOutDuration: Duration(milliseconds: 100),
-                    ),
+                    child: _imageFile == null ? Image.asset('assets/graphics/user/anonymous.jpg') : Image.file(_imageFile),
                   ),
                 ),
                 onTap: _pickImage,
@@ -171,16 +166,21 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
 
   Future<void> _pickImage() async{
     File selected = await ImagePicker.pickImage(source: ImageSource.gallery);
-    selected = await ImageCropper.cropImage(
-      sourcePath: selected.path,
-      toolbarColor: Colors.brown,
-      toolbarWidgetColor: Colors.white,
-      toolbarTitle: 'Crop Image'
-    );
+    if(selected != null){
+      selected = await ImageCropper.cropImage(
+        ratioX: 1,
+        ratioY: 1,
+        sourcePath: selected.path,
+        toolbarColor: Colors.white,
+        toolbarWidgetColor: Colors.purple[700],
+        statusBarColor: Colors.black,
+        toolbarTitle: 'Crop Image'
+      );
 
-    setState(() {
-     _imageFile = selected; 
-    });
+      setState(() {
+        _imageFile = selected; 
+      });
+    }
   }
 
   Future<void> saveGoodsRecord() async{
@@ -189,6 +189,16 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
 
     if(formState.validate()){
       formState.save();
+
+      final FirebaseStorage _storage = FirebaseStorage(storageBucket: 'gs://kopidalar.appspot.com/');
+      
+      String downloadUrl = "";
+
+      if(_imageFile != null){
+        StorageUploadTask _uploadTask = _storage.ref().child('goods/${DateTime.now()}.jpg').putFile(_imageFile);
+        StorageTaskSnapshot _storageTaskSnapshot = await _uploadTask.onComplete;
+        downloadUrl = await _storageTaskSnapshot.ref.getDownloadURL();
+      }
 
       try{
         DocumentSnapshot userData = await getUserByAuthUID(_userID);
@@ -199,7 +209,7 @@ class _AddGoodsState extends State<AddGoodsPage> with SingleTickerProviderStateM
             'uid': _userID,
             'name': _name,
             'price': int.parse(_price),
-            'img_url': "",
+            'img_url': downloadUrl,
           }
         );
         Navigator.pop(context);

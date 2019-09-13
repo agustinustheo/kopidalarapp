@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:kopidalar/pages/accounts/signIn.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -170,8 +171,45 @@ class _SignUpPageState extends State<SignUpPage> {
         user.sendEmailVerification();
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
       }
-      catch(e){
-        print(e);
+      catch(signUpError){
+        if(signUpError is PlatformException) {
+          if(signUpError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    'Error',
+                    style: new TextStyle(
+                      color: Colors.red[600],
+                    ),
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Email is already used!\nPlease use another email to sign up.'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text(
+                        'Close',
+                        style: new TextStyle(
+                          color: Colors.red[600],
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        }
       }
     }
   }

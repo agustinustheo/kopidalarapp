@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:kopidalar/pages/accounts/registerUser.dart';
 import 'package:kopidalar/pages/accounts/signUp.dart';
 import 'package:kopidalar/pages/home.dart';
@@ -221,8 +222,45 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
       }
-      catch(e){
-        print(e);
+      catch(signInError){
+        if(signInError is PlatformException) {
+          if(signInError.code == 'ERROR_WRONG_PASSWORD') {
+            return showDialog<void>(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    'Error',
+                    style: new TextStyle(
+                      color: Colors.red[600],
+                    ),
+                  ),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('Wrong password!'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text(
+                        'Close',
+                        style: new TextStyle(
+                          color: Colors.red[600],
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+        }
       }
     }
   }

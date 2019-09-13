@@ -22,34 +22,7 @@ class _RegisterUserState extends State<RegisterUserPage>{
 
   @override
   Widget build(BuildContext context){
-    final Shader _linearGradientTtile = LinearGradient(
-      colors: <Color>[
-        Color(0xff422605), 
-        Color(0xffb3671b),
-      ],
-    ).createShader(
-      Rect.fromLTWH(
-        0.0, 
-        0.0, 
-        60.0, 
-        10.0
-      )
-    );
-
     return new Scaffold(
-      // appBar: AppBar(
-      //   iconTheme: IconThemeData(
-      //     color: Colors.brown, //change your color here
-      //   ),
-      //   title: new Text(
-      //     'Create Profile',
-      //     style: new TextStyle(
-      //       fontWeight: FontWeight.bold,
-      //       foreground: Paint()..shader = _linearGradientTtile,
-      //     ),
-      //   ),
-      //   backgroundColor: Colors.white,
-      // ),
       resizeToAvoidBottomPadding: false,
       body: Form(
         key: _formKey,
@@ -74,22 +47,6 @@ class _RegisterUserState extends State<RegisterUserPage>{
                     ),
                     alignment: Alignment(-0.5, 0.0),
                   ),
-                  // new Container(
-                  //   width: 100.0,
-                  //   padding: const EdgeInsets.only(
-                  //     top: 10.0, 
-                  //     bottom: 10.0, 
-                  //   ),
-                  //   child: new ClipRRect(
-                  //     borderRadius: new BorderRadius.circular(100.0),
-                  //     child: FadeInImage(
-                  //       image: NetworkImage('https://www.povertyalliance.org/wp-content/uploads/2019/03/Portrait_Placeholder.png'),
-                  //       placeholder: AssetImage('assets/graphics/user/anonymous.jpg'),
-                  //       fadeInDuration: Duration(milliseconds: 100),
-                  //       fadeOutDuration: Duration(milliseconds: 100),
-                  //     ),
-                  //   ),
-                  // ),
                   new Container(
                     margin: const EdgeInsets.all(
                       5.0,
